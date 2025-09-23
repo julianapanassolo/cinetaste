@@ -3,28 +3,30 @@ import ArticleCard from './ArticleCard';
 import './ArticleGrid.css';
 
 function ArticleGrid() {
-  const [articles, setArticles] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [articles, setArticles] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
-    const fetchArticles = async () => {
-      try {
-        const response = await fetch('http://localhost:8080/api/articles');
-        if (!response.ok) {
-          throw new Error(`Erro de rede: ${response.status}`);
+    
+    if (!propArticles) {
+      const fetchArticles = async () => {
+        try {
+          const response = await fetch('http://localhost:8080/api/articles')
+          if (!response.ok) {
+            throw new Error(`Erro de rede: ${response.status}`)
+          }
+          const data = await response.json()
+          setArticles(data);
+        } catch (e) {
+          setError(e.message);
+        } finally {
+          setLoading(false)
         }
-        const data = await response.json();
-        setArticles(data);
-      } catch (e) {
-        setError(e.message);
-      } finally {
-        setLoading(false);
       }
-    };
-
-    fetchArticles();
-  }, []);
+      fetchArticles()
+    }
+  }, [propArticles])
 
   if (loading) {
     return <div className="loading">Carregando artigos...</div>;
