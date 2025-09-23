@@ -2,14 +2,16 @@ import React, { useState, useEffect } from 'react';
 import ArticleCard from './ArticleCard';
 import './ArticleGrid.css';
 
-function ArticleGrid() {
-  const [articles, setArticles] = useState([])
+function ArticleGrid({ articles }) {
+  const [componetArticles, setComponetArticles] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    
-    if (!propArticles) {
+    if (articles && articles.length > 0) {
+      setComponetArticles(articles)
+      setLoading(false)
+    } else {
       const fetchArticles = async () => {
         try {
           const response = await fetch('http://localhost:8080/api/articles')
@@ -17,16 +19,16 @@ function ArticleGrid() {
             throw new Error(`Erro de rede: ${response.status}`)
           }
           const data = await response.json()
-          setArticles(data);
+          setComponetArticles(data)
         } catch (e) {
-          setError(e.message);
+          setError(e.message)
         } finally {
           setLoading(false)
         }
       }
       fetchArticles()
     }
-  }, [propArticles])
+  }, [articles])
 
   if (loading) {
     return <div className="loading">Carregando artigos...</div>;
@@ -34,13 +36,13 @@ function ArticleGrid() {
   if (error) {
     return <div className="error">Erro: {error}</div>;
   }
-  if (articles.length === 0) {
+  if (componetArticles.length === 0) {
     return <div className="no-articles">Nenhum artigo encontrado.</div>;
   }
 
   return (
     <div className="article-grid">
-      {articles.map(article => (
+      {componetArticles.map(article => (
         <ArticleCard key={article.id} article={article} />
       ))}
     </div>
