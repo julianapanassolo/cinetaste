@@ -1,0 +1,11 @@
+.article-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+@media (max-widht: 768px) {
+    .article-grid {
+        grid-template-columns: 1fr;
+    }
+}

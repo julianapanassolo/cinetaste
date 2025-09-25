@@ -1,0 +1,12 @@
+root = "."
+tmp_dir = "tmp"
+
+[build]
+  cmd = "go build -o ./tmp/cinetaste-backend ."
+  bin = "./tmp/cinetaste-backend"
+  delay = 1000
+  exclude_dir = ["tmp"]
+  include_ext = ["go", "tpl", "tmpl", "html"]
+
+[log]
+  time = true
