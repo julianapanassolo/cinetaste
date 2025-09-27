@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   backend:
     build:
@@ -10,6 +8,12 @@ services:
     volumes:
       - ./backend:/app
     command: go run ./cmd/api/main.go
+    environment:
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASSWORD=cinetaste_password
+      - DB_NAME=cinetaste_database
 
   frontend:
     build:

@@ -27,7 +27,7 @@ func articlesHandler(w http.ResponseWriter, r *http.Request) {
 
 	var articles []Article
 
-	rows, err := db.Query("SELECT id, title, category, image_url, content FROM articles")
+	rows, err := db.Query("SELECT id, title, category, image, content FROM articles")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -65,7 +65,7 @@ func articleHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var article Article
-	row := db.QueryRow("SELECT id, title, category, image_url, content FROM articles WHERE id = ?", id)
+	row := db.QueryRow("SELECT id, title, category, image, content FROM articles WHERE id = ?", id)
 	err = row.Scan(&article.ID, &article.Title, &article.Category, &article.Image, &article.Content)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -86,7 +86,7 @@ func categoryHandler(w http.ResponseWriter, r *http.Request) {
 
 	var filteredArticles []Article
 
-	rows, err := db.Query("SELECT id, title, category, image_url, content FROM articles WHERE category = ?", category)
+	rows, err := db.Query("SELECT id, title, category, image, content FROM articles WHERE category = ?", category)
 	if err != nil {
 		log.Fatal(err)
 	}

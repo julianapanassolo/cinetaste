@@ -14,7 +14,7 @@ function ArticleGrid({ articles }) {
     } else {
       const fetchArticles = async () => {
         try {
-          const response = await fetch('http://localhost:8080/api/articles')
+          const response = await fetch('http://backend:8080/api/articles')
           if (!response.ok) {
             throw new Error(`Erro de rede: ${response.status}`)
           }
