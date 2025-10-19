@@ -1,0 +1,7 @@
+-- migrate up
+INSERT INTO articles (title, category, image, content) VALUES
+('Crítica: Uma Sexta-Feira Muito Louca', 'Crítica', 'https://br.web.img2.acsta.net/img/6f/66/6f66138617975f82a22117b0787681ed.jpg?w=1200&h=900&crop=0', 'Uma comédia hilária que explora a troca de corpos entre mãe e filha e as confusões que isso gera.'),
+('Netflix cancela nove séries de ficção popular em 2024', 'Notícias', 'https://br.web.img3.acsta.net/img/45/ad/45ad27e72b3c7fe954a7f0e7d5a57a8a.jpg?w=1200&h=900&crop=0', 'A Netflix surpreendeu ao anunciar o cancelamento de nove de suas séries mais populares, deixando fãs surpresos e decepcionados.'),
+('Os 10 melhores filmes de todos os tempos, segundo o Rotten Tomatoes', 'Streaming', '/o-poderoso-chefao-1.jpg', 'O ranking dos melhores filmes de todos os tempos, segundo o renomado site Rotten Tomatoes, revela surpresas e clássicos inabaláveis.'),
+('Atriz de "Invocação do Mal 4" revela assombrações durante as filmagens', 'Entrevista', 'https://www.bnesaopaulo.com.br/media/_versions/2022/10/annabelle_w1200_h900.jpg', 'Em entrevista exclusiva, a atriz principal de "Invocação do Mal 4" conta experiências assustadoras durante a gravação.'),
+('Novo trailer de "Avatar: Fogo e Cinzas"', 'Notícias', 'https://admin.cnnbrasil.com.br/wp-content/uploads/sites/12/2025/09/avatar-fogo-e-cinzas.jpg?w=1200&h=900&crop=0', 'Um novo trailer para o filme "Avatar: Fogo e Cinzas", terceiro da franquia, foi lançado pelo estúdio 20th Century.');

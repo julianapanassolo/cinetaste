@@ -4,20 +4,20 @@ import ArticleGrid from './ArticleGrid'
 import FeaturedSection from './FeaturedSection'
 import Sidebar from './Sidebar'
 import './CategoryPage.css'
+import CategoryPage from "./CategoryPage";
 
-function CategoryPage() {
-    const { categoryName } = useParams()
+function Home() {
     const [articles, setArticles] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
+    const pageTitle = "Últimas Notícias"
 
     useEffect(() => {
         const fetchArticlesByCategory = async () => {
             setLoading(true)
             try {
-                const response = await fetch(`/api/articles/category/${categoryName}`);
+                const response = await fetch(`/api/articles`);
                 if (!response.ok) {
-                    console.error("URL da API que falhou:", `/api/articles/category/${categoryName}`)
                     throw new Error(`Erro de rede: ${response.status}`)
                 }
                 const data = await response.json()
@@ -29,10 +29,10 @@ function CategoryPage() {
             }
         }
         fetchArticlesByCategory()
-    }, [categoryName])
+    }, [])
 
     if (loading) {
-        return <div className="loading">Carregando artigos de {categoryName}...</div>
+        return <div className="loading">Carregando artigos de {CategoryPage}...</div>
     }
     if (error) {
         return <div className="error">Erro: {error}</div>
@@ -44,7 +44,7 @@ function CategoryPage() {
                 <FeaturedSection />
             </section>
             <section className="grid-section">
-                <h2 className="category-title">{categoryName}</h2>
+                <h2 className="category-title">{pageTitle}</h2>
                 <ArticleGrid articles={articles} />
             </section>
             <aside className="sidebar">
@@ -54,4 +54,4 @@ function CategoryPage() {
     )
 }
 
-export default CategoryPage
+export default Home

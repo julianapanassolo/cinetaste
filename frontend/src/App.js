@@ -7,6 +7,7 @@ import Sidebar from './components/Sidebar'
 import ArticleDetail from './components/ArticleDetail'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import CategoryPage from './components/CategoryPage'
+import Home from './components/Home'
 
 function HomePage() {
   return (
@@ -45,7 +46,7 @@ function App() {
         </div>
         <Header />
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/" element={<Home />} />
           <Route path="/article/:id" element={<ArticleDetail />} />
           <Route path="/category/:categoryName" element={<CategoryPage />} />
         </Routes>
