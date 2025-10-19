@@ -1,3 +1,5 @@
+version: "3.9"
+
 services:
   backend:
     build:
@@ -5,25 +7,25 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
-    volumes:
-      - ./backend:/app
-    command: go run ./cmd/api/main.go
     environment:
       - DB_HOST=mysql
       - DB_PORT=3306
       - DB_USER=root
       - DB_PASSWORD=cinetaste_password
       - DB_NAME=cinetaste_database
+    depends_on:
+      mysql:
+        condition: service_healthy
 
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    ports:
-      - "3000:80"
+    image: node:20-alpine 
+    working_dir: /app
     volumes:
-      - ./frontend/build:/usr/share/nginx/html
-    command: nginx -g "daemon off;"
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    command: sh -c "npm install && npm start"
 
   mysql:
     image: mysql:8.0
@@ -31,8 +33,17 @@ services:
     ports:
       - "3306:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: cinetaste_password
-      MYSQL_DATABASE: cinetaste_database
-    volumes:
-      - ./tmp/mysql-data:/var/lib/mysql
+      - MYSQL_ROOT_PASSWORD=cinetaste_password
+      - MYSQL_DATABASE=cinetaste_database
     command: --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pcinetaste_password"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:

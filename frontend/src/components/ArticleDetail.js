@@ -11,7 +11,7 @@ function ArticleDetail() {
     useEffect(() => {
         const fetchArticle = async () => {
             try {
-                const response = await fetch(`http://localhost:8080/api/article/${id}`)
+                const response = await fetch(`/api/articles/${id}`)
                 if (!response.ok) {
                     throw new Error(`Erro de rede: ${response.status}`)
                 }

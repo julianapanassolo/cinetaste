@@ -8,7 +8,7 @@ function ArticleGrid({ articles }) {
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    if (articles && articles.length > 0) {
+    if (articles && Array.isArray(articles)) {
       setComponetArticles(articles)
       setLoading(false)
     } else {

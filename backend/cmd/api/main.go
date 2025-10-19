@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+
+	// "os"
 	"strconv"
 	"strings"
 
@@ -29,7 +31,9 @@ func articlesHandler(w http.ResponseWriter, r *http.Request) {
 
 	rows, err := db.Query("SELECT id, title, category, image, content FROM articles")
 	if err != nil {
-		log.Fatal(err)
+		log.Println("Erro ao buscar todos os artigos:", err)
+		http.Error(w, "Erro ao buscar artigos", http.StatusInternalServerError)
+		return
 	}
 	defer rows.Close()
 
@@ -37,13 +41,16 @@ func articlesHandler(w http.ResponseWriter, r *http.Request) {
 		var a Article
 		err := rows.Scan(&a.ID, &a.Title, &a.Category, &a.Image, &a.Content)
 		if err != nil {
-			log.Fatal(err)
+			log.Println("Erro ao escanear linha em articlesHandler:", err)
+			continue
 		}
 		articles = append(articles, a)
 	}
 
 	if err := rows.Err(); err != nil {
-		log.Fatal(err)
+		log.Println("Erro após iteração em articlesHandler:", err)
+		http.Error(w, "Erro ao processar resultados", http.StatusInternalServerError)
+		return
 	}
 	json.NewEncoder(w).Encode(articles)
 }
@@ -82,13 +89,19 @@ func categoryHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
 
-	category := strings.TrimPrefix(r.URL.Path, "/api/articles/category/")
+	categoryPath := strings.TrimPrefix(r.URL.Path, "/api/articles/category/")
+
+	category := strings.TrimSpace(strings.TrimSuffix(categoryPath, "/"))
+
+	log.Println("Buscando Categoria (final e limpa):", category)
 
 	var filteredArticles []Article
 
 	rows, err := db.Query("SELECT id, title, category, image, content FROM articles WHERE category = ?", category)
 	if err != nil {
-		log.Fatal(err)
+		log.Println("Erro ao buscar artigos por categoria", err)
+		http.Error(w, "Erro ao buscar artigos por categoria", http.StatusInternalServerError)
+		return
 	}
 	defer rows.Close()
 
@@ -96,14 +109,44 @@ func categoryHandler(w http.ResponseWriter, r *http.Request) {
 		var a Article
 		err := rows.Scan(&a.ID, &a.Title, &a.Category, &a.Image, &a.Content)
 		if err != nil {
-			log.Fatal(err)
+			log.Println("Erro ao escanear linha em categoryHandler", err)
+			continue
 		}
 		filteredArticles = append(filteredArticles, a)
 	}
 	if err := rows.Err(); err != nil {
-		log.Fatal(err)
+		log.Println("Erro após iteração em categoryHandler:", err)
+		http.Error(w, "Erro ao processar resultados da categoria", http.StatusInternalServerError)
+		return
 	}
 	json.NewEncoder(w).Encode(filteredArticles)
+}
+
+func createArticleHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
+		return
+	}
+	var newArticle Article
+	err := json.NewDecoder(r.Body).Decode(&newArticle)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	result, err := db.Exec("INSERT INTO articles (title, category, image, content) VALUES (?, ?, ?, ?)",
+		newArticle.Title, newArticle.Category, newArticle.Image, newArticle.Content)
+	if err != nil {
+		http.Error(w, "Erro ao inserir artigo no banco de dados", http.StatusInternalServerError)
+		return
+	}
+	id, err := result.LastInsertId()
+	if err != nil {
+		http.Error(w, "Erro ao obter ID do artigo", http.StatusInternalServerError)
+		return
+	}
+	newArticle.ID = int(id)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(newArticle)
 }
 
 func main() {
@@ -120,6 +163,7 @@ func main() {
 	}
 	log.Println("Conectado ao banco de dados")
 
+	http.HandleFunc("/api/articles/create", createArticleHandler)
 	http.HandleFunc("/api/articles/category/", categoryHandler)
 	http.HandleFunc("/api/articles/", articleHandler)
 	http.HandleFunc("/api/articles", articlesHandler)

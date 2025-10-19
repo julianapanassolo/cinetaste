@@ -1,24 +1,26 @@
-FROM golang:1.25.0-alpine
+# Etapa de build
+FROM golang:1.25.0-alpine AS builder
 
-# Instale o git para que o 'go get' funcione
 RUN apk add --no-cache git
-
-# Defina o diretório de trabalho dentro do contêiner
 WORKDIR /app
 
-# Copie os arquivos de dependência do Go e baixe as dependências
+# Copia dependências
 COPY go.mod go.sum ./
 RUN go mod download
 
-# Instale o Air em um diretório padrão do PATH
-# O "go install" vai instalar o binário no diretório $GOPATH/bin, que já está no PATH
-RUN go install github.com/air-verse/air@latest
-
-# Copie o código fonte
+# Copia todo o código
 COPY . .
 
-# Exponha a porta
-EXPOSE 8080
+# Compila a aplicação
+RUN go build -o server ./cmd/api
 
-# Execute a aplicação com o Air. Não é necessário o caminho completo, pois 'air' está no PATH.
-CMD ["air", "-c", ".air.toml"]
+# Imagem final
+FROM alpine:3.20
+WORKDIR /app
+
+# Copia binário e migrations
+COPY --from=builder /app/server .
+COPY --from=builder /app/sql ./sql
+
+EXPOSE 8080
+CMD ["./server"]
