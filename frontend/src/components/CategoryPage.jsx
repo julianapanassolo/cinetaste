@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from 'react-router-dom'
-import ArticleGrid from './ArticleGrid'
-import FeaturedSection from './FeaturedSection'
-import Sidebar from './Sidebar'
+import ArticleGrid from './ArticleGrid.jsx'
+import FeaturedSection from './FeaturedSection.jsx'
+import Sidebar from './Sidebar.jsx'
 import './CategoryPage.css'
 
 function CategoryPage() {
@@ -40,15 +40,14 @@ function CategoryPage() {
 
     return (
         <main className="main-content">
-            <section className="featured-section">
-                <FeaturedSection />
-            </section>
+
             <section className="grid-section">
-                <h2 className="category-title">{categoryName}</h2>
+                <h2 className="category-title">{categoryName.charAt(0).toUpperCase() + categoryName.slice(1)}</h2>
                 <ArticleGrid articles={articles} />
             </section>
-            <aside className="sidebar">
-                <Sidebar />
+
+            <aside className="sidebar-container">
+                <Sidebar articles={articles} />
             </aside>
         </main>
     )

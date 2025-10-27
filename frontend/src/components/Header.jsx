@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from 'react-router-dom'
 import './Header.css';
-import { Film } from 'lucide-react'
+import { Home, Newspaper, MonitorPlay, MessageCircle, Mic, Film } from 'lucide-react'
 
 function getFormattedDate() {
     const date = new Date()
@@ -16,17 +16,17 @@ function Header() {
             <div className="header-container">
                 <div className="header-left">
                     <div className="logo">
-                        <Film />
+                        <Film size={30} />
                         <Link to="/">CineTaste</Link>
                     </div>
                 </div>
                 <nav className="main-nav">
                     <ul>
-                        <li><Link to="/">Home</Link></li>
-                        <li><Link to="/category/Noticias">Notícias</Link></li>
-                        <li><Link to="/category/Streaming">Streaming</Link></li>
-                        <li><Link to="/category/Crítica">Críticas</Link></li>
-                        <li><Link to="/category/Entrevista">Entrevistas</Link></li>
+                        <li><Link to="/"><Home size={18} /> Home</Link></li>
+                        <li><Link to="/category/Noticias"><Newspaper size={18} /> Notícias</Link></li>
+                        <li><Link to="/category/Streaming"><MonitorPlay size={18} /> Streaming</Link></li>
+                        <li><Link to="/category/Critica"><MessageCircle size={18} /> Críticas</Link></li>
+                        <li><Link to="/category/Entrevista"><Mic size={18} /> Entrevistas</Link></li>
                     </ul>
                 </nav>
                 <div className="header-info">
