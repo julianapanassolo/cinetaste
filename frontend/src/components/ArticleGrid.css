@@ -4,7 +4,7 @@
     gap: 20px;
 }
 
-@media (max-widht: 768px) {
+@media (max-width: 768px) {
     .article-grid {
         grid-template-columns: 1fr;
     }

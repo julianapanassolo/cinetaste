@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from 'react-router-dom'
-import ArticleGrid from './ArticleGrid'
-import FeaturedSection from './FeaturedSection'
-import Sidebar from './Sidebar'
-import './CategoryPage.css'
-import CategoryPage from "./CategoryPage";
+import ArticleGrid from './ArticleGrid.jsx'
+import FeaturedSection from './FeaturedSection.jsx'
+import Sidebar from './Sidebar.jsx'
+import './Home.css'
 
 function Home() {
     const [articles, setArticles] = useState([])
@@ -13,7 +11,7 @@ function Home() {
     const pageTitle = "Últimas Notícias"
 
     useEffect(() => {
-        const fetchArticlesByCategory = async () => {
+        const fetchArticles = async () => {
             setLoading(true)
             try {
                 const response = await fetch(`/api/articles`);
@@ -28,27 +26,30 @@ function Home() {
                 setLoading(false)
             }
         }
-        fetchArticlesByCategory()
+        fetchArticles()
     }, [])
 
     if (loading) {
-        return <div className="loading">Carregando artigos de {CategoryPage}...</div>
+        return <div className="loading">Carregando a página inicial...</div>
     }
     if (error) {
         return <div className="error">Erro: {error}</div>
     }
 
+    const featuredArticle = articles.find(a => a.category === 'Home')
+    const remainingArticles = articles.filter(a => a.category !== 'Home')
+
     return (
         <main className="main-content">
-            <section className="featured-section">
-                <FeaturedSection />
+            <section className="featured-section-container">
+                {featuredArticle && <FeaturedSection article={featuredArticle} />}
             </section>
             <section className="grid-section">
                 <h2 className="category-title">{pageTitle}</h2>
-                <ArticleGrid articles={articles} />
+                <ArticleGrid articles={remainingArticles} />
             </section>
-            <aside className="sidebar">
-                <Sidebar />
+            <aside className="sidebar-container">
+                <Sidebar articles={articles} />
             </aside>
         </main>
     )

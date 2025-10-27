@@ -40,7 +40,9 @@ function ArticleDetail() {
         <div className="article-detail-container">
             <h1 className="article-title">{article.title}</h1>
             <span className="article-category">{article.category}</span>
-            <img src={article.image} alt={article.title} className="article-image" />
+            <div className="article-image-container">
+                <img src={article.image} alt={article.title} className="article-image" />
+            </div>
             <p className="article-content">{article.content}</p>
         </div>
     )
