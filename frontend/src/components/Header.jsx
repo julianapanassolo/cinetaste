@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from 'react-router-dom'
 import './Header.css';
 import { Home, Newspaper, MonitorPlay, MessageCircle, Mic, Film } from 'lucide-react'
@@ -11,6 +11,14 @@ function getFormattedDate() {
 
 function Header() {
     const currentDate = getFormattedDate()
+    const [searchTerm, setSearchTerm] = useState('')
+
+    const handleSearch = (e) => {
+        e.preventDefault()
+        if (searchTerm.trim()) {
+            window.location.href = `/search?q=${searchTerm}`
+        }
+    }
     return (
         <header className="header">
             <div className="header-container">
@@ -31,10 +39,15 @@ function Header() {
                 </nav>
                 <div className="header-info">
                     <span className="current-date">{currentDate}</span>
-                    <div className="search-box">
-                        <input type="text" placeholder="Pesquisar..." />
+                    <form onSubmit={handleSearch} className="search-box">
+                        <input
+                            type="text"
+                            placeholder="Pesquisar..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
                         <button type="submit">🔍</button>
-                    </div>
+                    </form>
                 </div>
             </div>
         </header>

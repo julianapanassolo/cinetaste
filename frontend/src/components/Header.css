@@ -14,7 +14,7 @@
 .header-left {
     display: flex;
     align-items: center;
-    gap: 70px;
+    gap: 30px;
 }
 
 .header-info {
@@ -40,6 +40,11 @@
     color: #e50914;
     width: 30px;
     height: 30px;
+}
+
+.main-nav {
+    flex-grow: 1;
+    margin: 0 40px;
 }
 
 .main-nav ul {

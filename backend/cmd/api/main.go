@@ -149,6 +149,53 @@ func createArticleHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(newArticle)
 }
 
+// NOVO: Adicione esta função ao seu código Go
+func searchHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+
+	searchTerm := r.URL.Query().Get("q")
+
+	if searchTerm == "" {
+		json.NewEncoder(w).Encode([]Article{})
+		return
+	}
+
+	query := `
+        SELECT id, title, category, image, content 
+        FROM articles 
+        WHERE title LIKE CONCAT('%', ?, '%') OR content LIKE CONCAT('%', ?, '%')
+    `
+	searchParam := searchTerm
+
+	var searchResults []Article
+
+	rows, err := db.Query(query, searchParam, searchParam)
+	if err != nil {
+		log.Println("Erro ao buscar artigos por termo:", err)
+		http.Error(w, "Erro ao realizar busca", http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var a Article
+		err := rows.Scan(&a.ID, &a.Title, &a.Category, &a.Image, &a.Content)
+		if err != nil {
+			log.Println("Erro ao escanear linha em searchHandler:", err)
+			continue
+		}
+		searchResults = append(searchResults, a)
+	}
+
+	if err := rows.Err(); err != nil {
+		log.Println("Erro após iteração em searchHandler:", err)
+		http.Error(w, "Erro ao processar resultados da busca", http.StatusInternalServerError)
+		return
+	}
+	json.NewEncoder(w).Encode(searchResults)
+}
+
 func main() {
 	var err error
 	db, err = sql.Open("mysql", "root:cinetaste_password@tcp(cinetaste-mysql:3306)/cinetaste_database?parseTime=true")
@@ -163,8 +210,10 @@ func main() {
 	}
 	log.Println("Conectado ao banco de dados")
 
+	http.HandleFunc("/api/articles/search", searchHandler)
 	http.HandleFunc("/api/articles/create", createArticleHandler)
 	http.HandleFunc("/api/articles/category/", categoryHandler)
+
 	http.HandleFunc("/api/articles/", articleHandler)
 	http.HandleFunc("/api/articles", articlesHandler)
 
