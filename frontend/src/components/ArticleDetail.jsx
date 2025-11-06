@@ -43,7 +43,10 @@ function ArticleDetail() {
             <div className="article-image-container">
                 <img src={article.image} alt={article.title} className="article-image" />
             </div>
-            <p className="article-content">{article.content}</p>
+            <p
+                className="article-content"
+                dangerouslySetInnerHTML={{ __html: article.content }}
+            />
         </div>
     )
 }
